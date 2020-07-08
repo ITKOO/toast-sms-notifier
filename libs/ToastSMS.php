@@ -121,7 +121,7 @@ class ToastSMS
     }
 
     /**
-     * Check type of RecipientList 
+     * Check type of RecipientList
      * @param $recipientList
      * @return array|null
      */
@@ -290,6 +290,102 @@ class ToastSMS
     public function setAuthMsg(string $authMsg): void
     {
         $this->authMsg = $authMsg;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getApiKey()
+    {
+        return $this->api_key;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserAgent()
+    {
+        return $this->user_agent;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost(): ?string
+    {
+        return $this->host;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion(): ?string
+    {
+        return $this->version;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRejectionNumber()
+    {
+        return $this->rejectionNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResult()
+    {
+        return $this->result;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthMsg(): ?string
+    {
+        return $this->authMsg;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLanguage(): ?string
+    {
+        return $this->language;
     }
 
     /**
