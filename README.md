@@ -68,6 +68,22 @@ $mmsOption->setTagExpression($tagExpressionList);
 $toastSMS->sendTagLMS("title", "text", $recipientList, $mmsOption);
 ```
 
+- KakaoTalk BizMessage
+```
+$plusFriendId = "@channelName";
+$templateCode = "templateCode";
+$templateParameter = array(
+    "key"=>"value"
+);
+
+$bizTalkRecipientList = array();
+$bizTalkRecipientModel = new ToastKakaoTalkBizMessageRecipient("01012345678", $templateParameter);
+array_push($bizTalkRecipientList, $bizTalkRecipientModel);
+
+/* Send KakaoTalk BizMessage */
+$toastSMS->sendKakaoTalkBizMessage($plusFriendId, $templateCode, $bizTalkRecipientList);
+```
+
 <br><hr><br>
 - Auth message list 
 
