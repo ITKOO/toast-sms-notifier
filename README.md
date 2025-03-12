@@ -1,122 +1,150 @@
-# toast-sms-notifier
+# Toast SMS Notifier
 
-🔗 Toast SMS api Document : https://docs.toast.com/ko/Notification/SMS/ko/api-guide/
-<br><br>
+## Introduction
+Toast SMS Notifier is a PHP-based library that enables you to send SMS, MMS, and KakaoTalk BizMessages using the Toast SMS API. It provides various messaging options such as authentication SMS, advertisement messages, and tag-based messages.
 
-<h4>1. Create instance of ToastSMS class </h4>
+🔗 **Toast SMS API Documentation**: [Toast SMS API Guide](https://docs.toast.com/ko/Notification/SMS/ko/api-guide/)
 
+## Installation
+To use Toast SMS Notifier, include the required library in your PHP project.
+
+```php
+require_once 'ToastSMS.php';
 ```
-$toastSMS = new ToastSMS("api-key", "sender phone number");
+
+## Getting Started
+
+### 1. Create an Instance of `ToastSMS` Class
+Create an instance of the `ToastSMS` class using your API key and sender phone number.
+
+```php
+$toastSMS = new ToastSMS("your-api-key", "sender-phone-number");
 ```
 
-<h4>2. Create array of recipient's information </h4>
+### 2. Define Recipient List
+You can define recipients in multiple ways:
 
-```
-/*case 1 : array(phone number array)*/
+#### (1) Array of Phone Numbers
+```php
 $recipientList = array("01012345678", "01022222222");
+```
 
-/*case 2 : a phone number */
+#### (2) Single Phone Number
+```php
 $recipientList = "01012345678";
+```
 
-/*case 3 : Object Array(ToastSMSRecipient class) */
+#### (3) Using `ToastSMSRecipient` Class
+```php
 $recipient = new ToastSMSRecipient("01012345678");
-// $recipient->setCountryCode(82); // available to set options
+$recipient->setCountryCode(82); // Optional: Set country code
 array_push($recipientList, $recipient);
 ```
-<h4>3. Send message </h4>
 
-- SMS
+---
+
+## Sending Messages
+
+### Sending SMS
+#### Basic SMS
+```php
+$toastSMS->sendSMS("Your message text", $recipientList);
 ```
-/* Toast SMS Options, available to set ToastSMS options */
+
+#### SMS with Options
+```php
 $smsOption = new ToastSMSOption();
+$toastSMS->sendSMS("Your message text", $recipientList, $smsOption);
+```
 
-/* Send SMS */
-$toastSMS->sendSMS("text", $recipientList);
-$toastSMS->sendSMS("text", $recipientList, $smsOption); // with options
+#### Authentication SMS
+```php
+$toastSMS->sendAuthSMS("Your auth message", $recipientList, ToastSMS::AUTH);
+$toastSMS->sendAuthSMS("Your auth message", $recipientList, ToastSMS::AUTH, $smsOption);
+```
 
-/* Send Auth SMS, required auth message */
-$toastSMS->sendAuthSMS("text", $recipientList, ToastSMS::AUTH);
-$toastSMS->sendAuthSMS("text", $recipientList, ToastSMS::AUTH, $smsOption); // with options
+#### Advertisement SMS (Rejection Number Required)
+```php
+$rejectionNumber = "08012345678"; // Set rejection number in console
+$toastSMS->sendAdSMS("Ad message text", $recipientList, $rejectionNumber);
+$toastSMS->sendAdSMS("Ad message text", $recipientList, $rejectionNumber, $smsOption);
+```
 
-/* Send Ad SMS, required rejection number */
-$rejectionNumber = "08012345678"; // rejection number (console > 080 rejection setting)
-$toastSMS->sendAdSMS("text", $recipientList, $rejectionNumber);
-$toastSMS->sendAdSMS("text", $recipientList, $rejectionNumber, $smsOption); // with options
-
-/* Send Tag SMS, tag expression array */
+#### Tag-based SMS
+```php
 $tagExpressionList = array("tag1", "tag2");
 $smsOption->setTagExpression($tagExpressionList);
-$toastSMS->sendTagSMS("text", $recipientList, $smsOption);
+$toastSMS->sendTagSMS("Tagged message text", $recipientList, $smsOption);
 ```
 
-- MMS
-```
+### Sending MMS
+```php
 $mmsOption = new ToastSMSOption();
+$toastSMS->sendMMS("Title", "MMS message text", $recipientList);
+$toastSMS->sendMMS("Title", "MMS message text", $recipientList, $mmsOption);
+```
 
-/* Send MMS */
-$toastSMS->sendMMS("title", "text", $recipientList);
-$toastSMS->sendMMS("title", "text", $recipientList, $mmsOption); // with options
+#### Advertisement MMS
+```php
+$toastSMS->sendAdMMS("Title", "Ad MMS message", $recipientList, $rejectionNumber);
+$toastSMS->sendAdMMS("Title", "Ad MMS message", $recipientList, $rejectionNumber, $mmsOption);
+```
 
-/* Send Ad MMS, required rejection number */
-$rejectionNumber = "08012345678"; // rejection number (console > 080 rejection setting)
-$toastSMS->sendAdMMS("title", "text", $recipientList, $rejectionNumber);
-$toastSMS->sendAdMMS("title", "text", $recipientList, $rejectionNumber, $mmsOption); // with options
-
-/* Send Tag LMS, tag expression array */
+#### Tag-based LMS
+```php
 $tagExpressionList = array("tag1", "tag2");
 $mmsOption->setTagExpression($tagExpressionList);
-$toastSMS->sendTagLMS("title", "text", $recipientList, $mmsOption);
+$toastSMS->sendTagLMS("Title", "Tagged LMS message", $recipientList, $mmsOption);
 ```
 
-- KakaoTalk BizMessage
-```
+---
+
+## Sending KakaoTalk BizMessages
+
+### Sending a KakaoTalk Message
+```php
 $plusFriendId = "@channelName";
 $templateCode = "templateCode";
 $templateParameter = array(
-    "key"=>"value"
+    "key" => "value"
 );
 
 $bizTalkRecipientList = array();
 $bizTalkRecipientModel = new ToastKakaoTalkBizMessageRecipient("01012345678", $templateParameter);
 array_push($bizTalkRecipientList, $bizTalkRecipientModel);
 
-/* Send KakaoTalk BizMessage */
 $toastSMS->sendKakaoTalkBizMessage($plusFriendId, $templateCode, $bizTalkRecipientList);
 ```
 
-<br><hr><br>
-- Auth message list 
+---
 
-  Required auth message when you send auth SMS
-```
-// auth
-$toastSMS->setAuthMsg(ToastSMS::AUTH_REQUIRED_MSG_EN);
+## Authentication Message List
+When sending an authentication SMS, you can specify the authentication message in various languages:
 
-// 인증 (default)
-$toastSMS->setAuthMsg(ToastSMS::AUTH_REQUIRED_MSG_KR);
-
-// にんしょう
-$toastSMS->setAuthMsg(ToastSMS::AUTH_REQUIRED_MSG_JP);
-
-// 認証
-$toastSMS->setAuthMsg(ToastSMS::AUTH_REQUIRED_MSG_CN);
-
-// verif
-$toastSMS->setAuthMsg(ToastSMS::AUTH_REQUIRED_MSG_VERIF);
-
-// password
-$toastSMS->setAuthMsg(ToastSMS::AUTH_REQUIRED_MSG_PASSWORD);
-
-// 비밀번호
-$toastSMS->setAuthMsg(ToastSMS::AUTH_REQUIRED_MSG_PASSWORD_KR);
+```php
+$toastSMS->setAuthMsg(ToastSMS::AUTH_REQUIRED_MSG_EN); // English
+$toastSMS->setAuthMsg(ToastSMS::AUTH_REQUIRED_MSG_KR); // Korean (default)
+$toastSMS->setAuthMsg(ToastSMS::AUTH_REQUIRED_MSG_JP); // Japanese
+$toastSMS->setAuthMsg(ToastSMS::AUTH_REQUIRED_MSG_CN); // Chinese
+$toastSMS->setAuthMsg(ToastSMS::AUTH_REQUIRED_MSG_VERIF); // Verification
+$toastSMS->setAuthMsg(ToastSMS::AUTH_REQUIRED_MSG_PASSWORD); // Password
+$toastSMS->setAuthMsg(ToastSMS::AUTH_REQUIRED_MSG_PASSWORD_KR); // Password in Korean
 ```
 
-- Language
-  (default : KR)
-  
-  Available to set language, AD message set by language 
+---
+
+## Setting Language
+By default, the language is set to Korean. You can change the language as follows:
+
+```php
+$toastSMS->setLanguage(ToastSMS::KR); // Korean (default)
+$toastSMS->setLanguage(ToastSMS::EN); // English
+$toastSMS->setLanguage(ToastSMS::JP); // Japanese
 ```
-$toastSMS->setLanguage(ToastSMS::KR);
-$toastSMS->setLanguage(ToastSMS::EN);
-$toastSMS->setLanguage(ToastSMS::JP);
-```
+
+---
+
+## Conclusion
+Toast SMS Notifier provides a simple yet powerful interface for sending SMS, MMS, and KakaoTalk messages. With various messaging options, it is suitable for different types of notifications, including authentication, advertisements, and tag-based messages.
+
+For more details, refer to the official [Toast SMS API Guide](https://docs.toast.com/ko/Notification/SMS/ko/api-guide/).
